@@ -1,10 +1,13 @@
 import os
 
 from flask import Flask, render_template, request
+
+# import flask connector to connect to mysql database
 import mysql.connector
 
-mydb = mysql.connector.connect(host='localhost', user='csc420', password='grace123', database='csc420')
-
+# create a database variable for the local database
+mydb = mysql.connector.connect(host='localhost', user='csc420', password='grace123', database='csc420db', auth_plugin="mysql_native_password")
+cursor = mydb.cursor()
 
 def create_app(test_config=None):
     # create and configure the app
@@ -34,26 +37,32 @@ def create_app(test_config=None):
     @app.route('/signup', methods=['POST', 'GET'])
     def signup():
         error = None
+        msg = None
         if request.method == 'POST':
             uname = request.form.get('uname')
             username = request.form.get('username')
             password = request.form.get('pass')
-            password2 = request.form.get('pass1')
+            password2 = request.form.get('pass2')
 
             if len(uname) < 4:
                 error = "Your name looks invalid"
+
             elif len(username) < 6:
                 error = "Your username should have atleast 6 characters"
+
             elif len(password) < 6:
                 error = "Your password should be atleast 6 characters long"
+
             elif password != password2:
                 error = "Password not matched"
+
             else:
-                query = "INSERT INTO users(id, name, username, password, date) VALUES (NULL, %s, %s, %s, NOW() )"
+                query = "INSERT INTO csc420db.users(PersonID, PersonName, UserName, Password, date) VALUES (NULL, %s, %s, %s, NOW() )"
                 cursor.execute(query, (uname, username, password))
+                mydb.commit()
                 msg = "Your account was successfully created you can now login to your account"
 
-        return render_template('signup.html', error=error)
+        return render_template('signup.html', error=error, msg=msg)
 
 
     @app.route('/login')
