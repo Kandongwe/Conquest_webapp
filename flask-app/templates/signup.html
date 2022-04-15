@@ -1,42 +1,58 @@
 <html>
-<head>
-    <title>USer Signup</title>
+<head lang="en">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+
+    <link rel="stylesheet" href="./static/style.css" />
+
+    <title>User Signup</title>
 </head>
 
-<body>
-    <br />
-    <!-- Message dispaly to the screen-->
-    {% if error%}
-        <p>{{ error }}</p>
-    {% endif %}
+<body class="signup">
+    <div class="container">
+        <br />
+        <!-- Message dispaly to the after account registration -->
+        {% if error%}
+            <p>{{ error }}</p>
+            <p>{{ p1 }}</p>
+            <p>{{ p2 }}</p>
+        {% endif %}
 
-    {% if msg %}
-        <p>{{ msg }}</p>
-    {% endif %}
+        {% if msg %}
+            <p>{{ msg }}</p>
+        {% endif %}
 
-    <form action="signup" method="post">
-        <div>
-            <label>Full Name</label>
-            <input type="text" name="uname" />
-        </div>
+        <form action="signup" method="post">
+            <div cl
+            <div>
+                <label>Full Name</label>
+                <input type="text" name="uname" />
+            </div>
 
-        <div>
-            <label>UserName</label>
-            <input type="text" name="username" />
-        </div>
+            <div>
+                <label>Username</label>
+                <input type="text" name="username" />
+            </div>
 
-        <div>
-            <label>Password</label>
-            <input type="text" name="pass" />
-        </div>
+            <div>
+                <label>Password</label>
+                <input type="text" name="pass" />
+            </div>
 
-        <div>
-            <label>Comfirm Password</label>
-            <input type="text" name="pass2" />
-        </div>
+            <div>
+                <label>Comfirm Password</label>
+                <input type="text" name="pass2" />
+            </div>
 
-        <div>
-            <input type="submit" name="submit" value="create account" />
-        </div>
+            <div>
+                <input type="submit" name="submit" value="Create Account" />
+            </div>
 
-    </form>
+            <div class="btn">
+                <a href="/login"> Login</a>
+            </div>
+        </form>
+    </div>
+</body>
