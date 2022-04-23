@@ -18,7 +18,22 @@ Sign Up
         <h2 class="form-signin-heading">Sign Up</h2>
         {{ form.hidden_tag() }}
         {{ wtf.form_field(form.username) }}
+        {% if msg %}
+        <div class="h-25 d-inline-block">
+            <div class="alert alert-danger" role="alert" style="height: 25;">
+                {{ msg }}
+            </div>
+        </div>
+        {% endif%}
         {{ wtf.form_field(form.email) }}
+
+        {% if msg1 %}
+        <div class="h-25 d-inline-block">
+            <div class="alert alert-danger" role="alert" style="height: 25%;">
+                {{ msg1 }}
+            </div>
+        </div>
+        {% endif%}
         {{ wtf.form_field(form.password) }}
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign Up</button>
     </form>
