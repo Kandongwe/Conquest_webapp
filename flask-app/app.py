@@ -58,32 +58,52 @@ def index():
 
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
+    msg = None
+    msg1 = None
     form = signUpForm()
     if form.validate_on_submit():
-        hashed_password = generate_password_hash(form.password.data, method='sha256')
-        new_user = User(username=form.username.data, email=form.email.data, password=hashed_password)
-        db.session.add(new_user)
-        db.session.commit()
+        username_exists = db.session.query(db.exists().where(User.username == form.username.data)).scalar()
+        email_exists = db.session.query(db.exists().where(User.email == form.email.data)).scalar()
+        if username_exists:
+            msg = " Username invalid "
+            if email_exists:
+                msg1 = " Email invalid "
 
-        # return '<h1>Your account has been created!</h1>'
-        return redirect('/main')
+        elif email_exists:
+            msg1 = "  Email invalid "
+            if username_exists:
+                msg = " Username invalid "
+
+        else:
+            hashed_password = generate_password_hash(form.password.data, method='sha256')
+            new_user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+            db.session.add(new_user)
+            db.session.commit()
+
+            return redirect('/login')
 
 
-    return render_template('signup.html', form=form)
+    return render_template('signup.html', form=form, msg=msg, msg1=msg1)
 
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     form = LoginForm()
     user = User.query.filter_by(username=form.username.data).first()
-
+    msg = None
+    msg1 = None
     if form.validate_on_submit():
         if user:
             if check_password_hash(user.password, form.password.data):
                 login_user(user, remember=form.remember.data)
                 return redirect('/main')
-
-        return '<h1>Invalid username or password</h1>'
+            else:
+                msg = "Incorrect pasword !"
+                return render_template('login.html', form=form, msg=msg)
+                
+        else:
+            msg1 = "Incorrect username !"
+            return render_template('login.html', form=form, msg1=msg1)
 
     return render_template('login.html', form=form)
 
@@ -101,8 +121,6 @@ def study():
 @app.route('/journal')
 def journal():
     return render_template('journal.html')
-
-
 @app.route('/main')
 @login_required
 def main():
