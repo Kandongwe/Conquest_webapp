@@ -56,23 +56,25 @@ class LoginForm(FlaskForm):
 def index():
     return render_template('index.html')
 
+# Logic for the sign up page for the database on the system
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
+    form = signUpForm()
     msg = None
     msg1 = None
-    form = signUpForm()
+    success = None
     if form.validate_on_submit():
         username_exists = db.session.query(db.exists().where(User.username == form.username.data)).scalar()
         email_exists = db.session.query(db.exists().where(User.email == form.email.data)).scalar()
         if username_exists:
-            msg = " Username invalid "
+            msg = " Invalid username ! "
             if email_exists:
-                msg1 = " Email invalid "
+                msg1 = " Invalid Email !"
 
         elif email_exists:
-            msg1 = "  Email invalid "
+            msg1 = "  Invalid Email !"
             if username_exists:
-                msg = " Username invalid "
+                msg = " Invalid username ! "
 
         else:
             hashed_password = generate_password_hash(form.password.data, method='sha256')
@@ -80,12 +82,14 @@ def signup():
             db.session.add(new_user)
             db.session.commit()
 
-            return redirect('/login')
+            success = "Account successfully created !"
+            return redirect(url_for('login', success=success))
 
 
     return render_template('signup.html', form=form, msg=msg, msg1=msg1)
 
 
+# Logic for the login page for the database into the system
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     form = LoginForm()
@@ -97,15 +101,17 @@ def login():
             if check_password_hash(user.password, form.password.data):
                 login_user(user, remember=form.remember.data)
                 return redirect('/main')
+                
             else:
                 msg = "Incorrect pasword !"
                 return render_template('login.html', form=form, msg=msg)
-                
+
         else:
             msg1 = "Incorrect username !"
             return render_template('login.html', form=form, msg1=msg1)
 
-    return render_template('login.html', form=form)
+    success = request.args.get("success")
+    return render_template('login.html', form=form, success=success)
 
 
 @app.route('/meditation')

@@ -1,17 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+{% block title %}
+Conquest Mindfulness
+{% endblock %}
 
-    <link rel="stylesheet" href="./static/style.css" />
+{% block content%}
 
-    <title>Conquest Mindfulness</title>
-
-</head>
 <body class="index">
     <!-- Settin up navigation bar -->
     <div class="topnav">
@@ -24,8 +19,5 @@
         <a href="/journal" class="button">Journal</a>
         <a href="/study" class="button">Study</a>
     </div>
-
-    <script src="./static/app.js"></script>
 </body>
-
-</html>
+{% endblock%}

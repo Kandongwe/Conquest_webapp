@@ -1,13 +1,8 @@
-{% extends "bootstrap/base.html" %}
+{% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}
 Sign Up
-{% endblock %}
-
-{% block styles %}
-{{super()}}
-<link rel="stylesheet" href="/static/style.css">
 {% endblock %}
 
 {% block content %}
@@ -19,23 +14,15 @@ Sign Up
         {{ form.hidden_tag() }}
         {{ wtf.form_field(form.username) }}
         {% if msg %}
-        <div class="h-25 d-inline-block">
-            <div class="alert alert-danger" role="alert" style="height: 25;">
-                {{ msg }}
-            </div>
-        </div>
+        <p class="text-danger">{{ msg }}</p>
         {% endif%}
         {{ wtf.form_field(form.email) }}
 
         {% if msg1 %}
-        <div class="h-25 d-inline-block">
-            <div class="alert alert-danger" role="alert" style="height: 25%;">
-                {{ msg1 }}
-            </div>
-        </div>
+        <p class="text-danger">{{ msg1 }}</p>
         {% endif%}
         {{ wtf.form_field(form.password) }}
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign Up</button>
+        <button class="btn btn-success" type="submit" style="width: 300px;">Sign Up</button>
     </form>
 
 </div>

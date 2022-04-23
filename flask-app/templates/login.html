@@ -1,9 +1,5 @@
-{% extends "bootstrap/base.html" %}
+{% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
-
-{% block title %}
-Login
-{% endblock %}
 
 {% block styles %}
 {{super()}}
@@ -15,6 +11,10 @@ Login
 <div class="container">
 
     <form class="form-signin" method="POST" action="/login">
+        {% if success %}
+        <p class="text-success">{{ success }}</p>
+        {%endif%}
+        
         <h2 class="form-signin-heading">Please Login</h2>
         {{ form.hidden_tag() }}
         {{ wtf.form_field(form.username) }}
@@ -27,7 +27,7 @@ Login
         <p class="text-danger">{{ msg }}</p>
         {%endif%}
         {{ wtf.form_field(form.remember) }}
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+        <button class="btn btn-primary " type="submit" style="width: 300px;">Login</button>
     </form>
 
 </div>
