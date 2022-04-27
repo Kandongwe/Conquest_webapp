@@ -8,28 +8,29 @@
 
 {% block content %}
 <body class="form">
-<div class="container">
+<div class="shadow p-3 mb-5 bg-body rounded" style="width: 330px; margin-left: 500px; margin-top: 25px;">
+    <div class="card-boady">
+        <form class="form-signin" method="POST" action="/login">
+            {% if success %}
+            <p class="text-success">{{ success }}</p>
+            {%endif%}
+            
+            <h2 class="form-signin-heading">Please Login</h2>
+            {{ form.hidden_tag() }}
+            {{ wtf.form_field(form.username) }}
+            {% if msg1 %}
+            <p class="text-danger">{{ msg1 }}</p>
+            {%endif%}
 
-    <form class="form-signin" method="POST" action="/login">
-        {% if success %}
-        <p class="text-success">{{ success }}</p>
-        {%endif%}
-        
-        <h2 class="form-signin-heading">Please Login</h2>
-        {{ form.hidden_tag() }}
-        {{ wtf.form_field(form.username) }}
-        {% if msg1 %}
-        <p class="text-danger">{{ msg1 }}</p>
-        {%endif%}
-
-        {{ wtf.form_field(form.password) }}
-        {% if msg %}
-        <p class="text-danger">{{ msg }}</p>
-        {%endif%}
-        {{ wtf.form_field(form.remember) }}
-        <button class="btn btn-primary " type="submit" style="width: 300px;">Login</button>
-    </form>
-
+            {{ wtf.form_field(form.password) }}
+            {% if msg %}
+            <p class="text-danger">{{ msg }}</p>
+            {%endif%}
+            {{ wtf.form_field(form.remember) }}
+            <button class="btn btn-primary " type="submit" style="width: 268px;">Login</button>
+            <a href="/" class="btn btn-primary" type="button" style="width: 268px; margin-top: 15px;">Cancel</a>
+        </form>
+    </div>
 </div>
 </body>
 {% endblock %}
