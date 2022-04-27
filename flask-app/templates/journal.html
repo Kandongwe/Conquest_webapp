@@ -1,21 +1,53 @@
-{% extends "bootstrap/base.html" %}
-{% import "bootstrap/wtf.html" as wft %}
+{% extends "base.html"%}
 
 {% block title %} 
 Journal page 
 {% endblock %}
 
 {% block content%}
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="mb-3">
-            <label for="Note" class="form-label">Note</label>
-            <textarea class="form-control" id="Note" rows="3" style="width: 70%;"></textarea>
-        </div>
-        <div class="mb-3">
-            <button class="btn btn-primary">Save</button>
-            <button class="btn btn-primary">Open</button>
-            <button class="btn btn-primary">Add Note</button>
+<div class="topnav">
+    <a href="/main" class="btn btn-secondary-outline" type="button">Back</a>
+</div>
+
+<div class="bg-success p-2" style="--bs-bg-opacity: .25; height: 100%;">
+    <div class="container">
+        <div class="row d-flex justify-content-center" style="margin-top: 5rem;">
+            <div class="col-md-8 col-lg-6">
+                <div class="card shadow-0 border" style="background-color: #f0f2f5;">
+                    <div class="card-body p-4">
+                        <form action="/journal" method="POST">
+                        <div class="form-outline mb-4">
+                            <input type="text" name="newNote" class="form-control" placeholder="+ Add Note" />
+                            <button class="btn btn-primary btn-sm" aria-pressed="true" style="margin-top: 8px;" type="submit" >Save</button>
+                        </div>
+                        </form>
+                        {% if notes%}
+                        {% for note in notes[::-1]%}
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <p>{{ note.content }}</p>
+
+                                <div class="d-flex justify-content-between">
+                                    <div class="d-flex flex-row align-items-center" style="margin-right: 10px;">
+                                        <form action="/journal" method="POST">
+                                            <button value="{{ note.id }}" class="btn btn-outline-success btn-sm" name="Edit" role="button"><p class="small mb-0">Edit</p></button>
+                                        </form>
+                                    </div>
+                                    
+                                    <div class="d-flex flex-row align-items-start"  style="margin-right: 380px;">
+                                        <form action="/journal" method="POST">
+                                            <button value="{{ note.id }}" class="btn btn-outline-success btn-sm" name="Delete" role="button"><p class="small mb-0">Delete</p></button>
+                                        </form>
+                                    </div>
+                                
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor%}
+                        {% endif%}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
