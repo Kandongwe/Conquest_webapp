@@ -23,18 +23,22 @@ login_manager.login_view = 'login'
 
 # Creation of user Models to be user in the  database
 class User(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    __tablename__ = 'user'
+    id = db.Column(db.Integer, primary_key=True, unique=True)
     username = db.Column(db.String(15), unique=True)
     email = db.Column(db.String(50), unique=True)
     password = db.Column(db.String(200))
+    noteID = db.Column(db.Integer, db.ForeignKey('notes.id'))
     
     def __repr__(self):
         return f'Model {self.model}'
 
+class Notes(db.Model):
+    __tablename__ = 'notes'
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(6000))
+    userId = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
 
 # Forms creation section beings here
 class signUpForm(FlaskForm):
@@ -50,6 +54,10 @@ class LoginForm(FlaskForm):
 
 # Forms creation section ends here
 
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 # Route creation beings here
 @app.route('/')
@@ -89,44 +97,6 @@ def signup():
     return render_template('signup.html', form=form, msg=msg, msg1=msg1)
 
 
-# Logic for the login page for the database into the system
-@app.route('/login', methods=['POST', 'GET'])
-def login():
-    form = LoginForm()
-    user = User.query.filter_by(username=form.username.data).first()
-    msg = None
-    msg1 = None
-    if form.validate_on_submit():
-        if user:
-            if check_password_hash(user.password, form.password.data):
-                login_user(user, remember=form.remember.data)
-                return redirect('/main')
-                
-            else:
-                msg = "Incorrect pasword !"
-                return render_template('login.html', form=form, msg=msg)
-
-        else:
-            msg1 = "Incorrect username !"
-            return render_template('login.html', form=form, msg1=msg1)
-
-    success = request.args.get("success")
-    return render_template('login.html', form=form, success=success)
-
-
-@app.route('/meditation')
-def meditation():
-    return render_template('meditation.html')
-
-
-@app.route('/study')
-def study():
-    return render_template('study.html')
-
-
-@app.route('/journal')
-def journal():
-    return render_template('journal.html')
 @app.route('/main')
 @login_required
 def main():
@@ -138,6 +108,73 @@ def main():
 def logout():
     logout_user()
     return redirect('index.html')
+
+
+# Logic for the login page for the database into the system
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    form = LoginForm()
+    user = User.query.filter_by(username=form.username.data).first()
+    msg = None
+    msg1 = None
+    if form.validate_on_submit():
+        if user:
+            if check_password_hash(user.password, form.password.data):
+                login_user(user, remember=form.remember.data)
+                return redirect(url_for('main'))
+                
+            else:
+                msg = "Incorrect pasword !"
+                return render_template('login.html', form=form, msg=msg)
+
+        else:
+            msg1 = "Incorrect username !"
+            return render_template('login.html', form=form, msg1=msg1)
+
+    success = request.args.get("success")
+    return render_template('login.html', form=form, success=success, user=user)
+
+
+@app.route('/journal', methods=['GET', 'POST'])
+@login_required
+def journal():
+    
+    notes = Notes.query.filter_by(userId=current_user.id).all()
+    if request.method == "POST":
+        editID = request.form.get("Edit")
+        deleteID = request.form.get("Delete")
+        print(deleteID)
+        if editID:
+            pass
+
+        elif deleteID:
+            note = Notes.query.filter_by(id=deleteID).first()
+            db.session.delete(note)
+            db.session.commit()
+
+            return render_template('journal.html', notes=notes)
+
+        else:
+            new_note = Notes(content=request.form.get("newNote"), userId=current_user.id)
+            db.session.add(new_note)
+            db.session.commit()
+
+            return render_template('journal.html', notes=notes)
+
+    else:
+        return render_template('journal.html', notes=notes)
+    
+
+@app.route('/meditation')
+def meditation():
+    return render_template('meditation.html')
+
+
+@app.route('/study')
+def study():
+    return render_template('study.html')
+
+
 
 # Route creation ends here
 
